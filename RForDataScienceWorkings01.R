@@ -437,4 +437,27 @@ ggsave("diamonds.pdf")
 
 write_csv(diamonds, "diamonds.csv")
 
+table4a <- tribble (~country, ~"1999", ~"2000",
+                    #-------|------|-------
+                    "Afghanistan", 745, 2666,
+                    "Brazil", 37737, 80488,
+                    "China", 212258, 213766
+)
+  
+tidy4a <- table4a %>%
+  gather(`1999`, `2000`, key = "year", value = "cases")
+
+table4b <- tribble (~country, ~"1999", ~"2000",
+                    #-------|------|-------
+                    "Afghanistan", 19987071, 20595360,
+                    "Brazil", 172006362, 174504898,
+                    "China", 1272915272, 1280428583
+)
+
+tidy4b <- table4b %>%
+  gather(`1999`, `2000`, key = "year", value = "population")
+  
+left_join(tidy4a, tidy4b)
+
+
 
