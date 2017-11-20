@@ -437,6 +437,8 @@ ggsave("diamonds.pdf")
 
 write_csv(diamonds, "diamonds.csv")
 
+# Tidy data with tidyr
+
 table4a <- tribble (~country, ~"1999", ~"2000",
                     #-------|------|-------
                     "Afghanistan", 745, 2666,
@@ -459,5 +461,20 @@ tidy4b <- table4b %>%
   
 left_join(tidy4a, tidy4b)
 
+table2 <- tribble (~country, ~year, ~type, ~count,
+                   #-------|------|------|-------
+                   "Afghanistan", 1999, "cases", 745,
+                   "Afghanistan", 1999, "population", 19987071,
+                   "Afghanistan", 2000, "cases", 2666,
+                   "Afghanistan", 2000, "population", 20595360,
+                   "Brazil", 1999, "cases", 37737,
+                   "Brazil", 1999, "population", 172006362,
+                   "Brazil", 2000, "cases", 80488,
+                   "Brazil", 2000, "population", 174504898,
+                   "China", 1999, "cases", 212258,
+                   "China", 1999, "population", 1272915272,
+                   "China", 2000, "cases", 213766,
+                   "China", 2000, "population", 1280428583
+)
 
-
+spread(table2, key = type, value = count)
