@@ -495,5 +495,7 @@ table3 %>%
 table3 %>%
   separate(year, into = c("century", "year"), sep = 2)
 
-
+# Case Study
+who1 <- who %>%
+  gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
 
