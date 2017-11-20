@@ -478,3 +478,22 @@ table2 <- tribble (~country, ~year, ~type, ~count,
 )
 
 spread(table2, key = type, value = count)
+
+table3 <- tribble(~country, ~year, ~rate,
+                 #-------|------|------
+                 "Afghanistan", 1999, "745/19987071",
+                 "Afghanistan", 2000, "2666/20595360",
+                 "Brazil", 1999, "37737/172006362",
+                 "Brazil", 2000, "80488/174504898",
+                 "China", 1999, "212258/1272915272",
+                 "China", 2000, "213766/1280428583"
+)
+
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
+
+table3 %>%
+  separate(year, into = c("century", "year"), sep = 2)
+
+
+
