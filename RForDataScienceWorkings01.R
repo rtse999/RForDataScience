@@ -499,3 +499,50 @@ table3 %>%
 who1 <- who %>%
   gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
 
+who1 %>% 
+  count(key)
+
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "agesex"), sep = "_")
+
+who4 <- who3 %>% 
+  select (-iso2, -iso3, -new)
+
+who5 <- who4 %>% 
+  separate(agesex, c("sex", "age"), sep = 1)
+
+who5 %>% 
+  count(country, year, sex)
+
+# Relational data with dplyr
+
+# Mutating joins
+flights2 <-  flights %>%
+  select(year:day, hour, origin, dest, tailnum, carrier)
+
+flights2 %>% 
+  select(-origin, -dest) %>% 
+  left_join(airlines, by = "carrier")
+
+flights2 %>% 
+  left_join(weather)
+
+flights2 %>% 
+  left_join(planes, by = "tailnum")
+
+flights2 %>% 
+  left_join(airports, c("dest" = "faa"))
+
+airports %>% 
+  semi_join(flights, c("faa" = "dest")) %>% 
+  ggplot(aes(lon, lat)) +
+  borders("state") + 
+  geom_point() +
+  coord_quickmap()
+
+flights %>% 
+  anti_join(planes, by = "tailnum") %>% 
+  count(tailnum, sort = TRUE)
