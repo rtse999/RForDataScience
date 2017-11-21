@@ -16,6 +16,7 @@ library(ggstance)
 library(lvplot)
 library(hexbin)
 library(modelr)
+library(stringr)
 
 mpg
 
@@ -546,3 +547,18 @@ airports %>%
 flights %>% 
   anti_join(planes, by = "tailnum") %>% 
   count(tailnum, sort = TRUE)
+
+# Strings with stringr
+str_length( c(" a", "R for data science", NA))
+
+str_c("x", "y", "z", sep = "   ")
+
+x <- c("Apple", "Banana", "Pear")
+str_sub(x, 1, 3)
+str_sub(x, -3, -1)
+
+str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+
+str_view(x, "an")
+str_view(x, ".a.")
+str_view(x, "^....$")
