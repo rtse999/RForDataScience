@@ -562,3 +562,14 @@ str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
 str_view(x, "an")
 str_view(x, ".a.")
 str_view(x, "^....$")
+str_view(x, "[^abc]")
+str_view(x, "^(a|e|i|o|u)")
+str_view(x, "[aeiou]")
+
+str_view( c(" grey", "gray"), "gr(e|a)y")
+
+y <- "\"\'\\\\"
+writeLines(y)
+
+str_view(stringr::words, "^y")
+
