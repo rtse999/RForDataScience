@@ -17,6 +17,7 @@ library(lvplot)
 library(hexbin)
 library(modelr)
 library(stringr)
+library(forcats)
 
 mpg
 
@@ -587,3 +588,37 @@ str_subset(words, "x$")
 str_view_all(x, "an")
 
 str_view(words, "^h|h$", match = TRUE)
+str_view(sentences, "s |s.|s,", match = TRUE)
+
+noun <- "(a|the|A|The) ([^ ]+)"
+has_noun <- sentences %>% 
+  str_subset(noun) %>% 
+  head(10)
+has_noun %>% 
+  str_extract(noun)
+
+sentences %>% 
+  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  head(5)
+
+# Factors with forcats
+gss_cat %>% 
+  count(race)
+
+gss_cat %>% 
+  count(relig)
+
+relig <- gss_cat %>% 
+  group_by(relig) %>% 
+  summarize(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(relig, aes(tvhours, relig)) +
+  geom_point()
+
+
+
+
