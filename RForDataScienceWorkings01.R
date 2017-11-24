@@ -19,6 +19,7 @@ library(modelr)
 library(stringr)
 library(forcats)
 library(lubridate)
+library(magrittr)
 
 devtools::session_info()
 
@@ -660,3 +661,12 @@ flights_dt %>%
   filter(dep_time < ymd(20130102)) %>% 
   ggplot(aes(dep_time)) +
   geom_freqpoly(binwidth = 600)
+
+flights_dt %>% 
+  mutate(dep_hour = update(dep_time, yday = 1)) %>% 
+  ggplot(aes(dep_hour)) + 
+  geom_freqpoly(binwidth=300)
+
+# Pipes with magrittr
+
+
