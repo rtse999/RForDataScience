@@ -3,7 +3,7 @@
 #
 # Location: /Users/raymondtse/Dropbox/Analysis/Books/RForDataScience/RForDataScienceWorkings01.r
 # First created: 08:11 - Thursday 6 July 2017
-# Last modified: 08:11 - Thursday 6 July 2017
+# Last modified: 16:27 - Saturday 9 December 2017
 #
 
 ### System time ###
@@ -667,6 +667,5 @@ flights_dt %>%
   ggplot(aes(dep_hour)) + 
   geom_freqpoly(binwidth=300)
 
-# Pipes with magrittr
 
 
