@@ -1,14 +1,19 @@
-#
+# ------------------------------------------------------------------------
 # Worked through examples from "R for Data Science" book
 #
 # Location: /Users/raymondtse/Dropbox/Analysis/Books/RForDataScience/RForDataScienceWorkings01.r
 # First created: 08:11 - Thursday 6 July 2017
-# Last modified: 16:27 - Saturday 9 December 2017
-#
+# Last modified: 16:27 - Sunday 17 December 2017
+# ------------------------------------------------------------------------
 
-### System time ###
+# ------------------------------------------------------------------------
+# System time
+# ------------------------------------------------------------------------
 format(Sys.time(), "%a %b %d %H:%M:%S %Y")
 
+# ------------------------------------------------------------------------
+# Install Packages
+# ------------------------------------------------------------------------
 #install.packages("hexbin")
 library(tidyverse)
 library(nycflights13)
@@ -25,7 +30,9 @@ devtools::session_info()
 
 mpg
 
-### ggplot
+# ------------------------------------------------------------------------
+# ggplot
+# ------------------------------------------------------------------------
 ggplot(data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy))
 
@@ -35,7 +42,9 @@ ggplot(data = mpg) +
 ggplot(data = mpg) +
   geom_point(mapping = aes(x=class, y=drv))
 
-### Aesthetics
+# ------------------------------------------------------------------------
+# Aesthetics
+# ------------------------------------------------------------------------
 ggplot (data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy, color=class))
 
@@ -66,7 +75,9 @@ ggplot(data = mpg) +
 ggplot(data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy, colour=cyl < 5))
 
-### Facets
+# ------------------------------------------------------------------------
+# Facets
+# ------------------------------------------------------------------------
 ggplot(data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy)) +
   facet_wrap(~ class, nrow = 3)
@@ -95,7 +106,9 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy)) +
   facet_grid(drv ~ .)
 
-### Geometric objects
+# ------------------------------------------------------------------------
+# Geometric objects
+# ------------------------------------------------------------------------
 ggplot(data = mpg) +
   geom_point(mapping = aes(x=displ, y=hwy))
 
@@ -124,8 +137,9 @@ ggplot(data = mpg, mapping = aes(x=displ, y=hwy)) +
   geom_point(mapping = aes(colour=class)) +
   geom_smooth(data = filter(mpg, class=="subcompact"), se=FALSE)
 
-### Statistical transformations
-
+# ------------------------------------------------------------------------
+# Statistical transformations
+# ------------------------------------------------------------------------
 ggplot(data = diamonds) +
   geom_bar(mapping = aes(x=cut))
 
@@ -193,7 +207,9 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   coord_flip() +
   labs(title = "This Box Plot")
 
-### Chapter 3: Data transformation with dplyr
+# ------------------------------------------------------------------------
+# Chapter 3: Data transformation with dplyr
+# ------------------------------------------------------------------------
 flights
 
 filter(flights, month == 1, day == 1)
@@ -325,8 +341,9 @@ flights %>%
     avg_delay = mean(dep_delay, na.rm = TRUE)
   )
 
-### Chapter 5: Exploratory Data Analysis
-
+# ------------------------------------------------------------------------
+# Chapter 5: Exploratory Data Analysis
+# ------------------------------------------------------------------------
 ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut))
 
@@ -402,7 +419,9 @@ ggplot(data = diamonds) +
   geom_violin(mapping = aes(x = cut, y = price)) +
   geom_boxplot(mapping = aes(x = cut, y=price), width = 0.1)
 
+# ------------------------------------------------------------------------
 # Two categorical variables
+# ------------------------------------------------------------------------
 ggplot(data = diamonds) +
   geom_count(mapping = aes(x=cut, y=color))
 
@@ -420,7 +439,9 @@ ggplot(data = diamonds) +
 ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
   geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
 
+# ------------------------------------------------------------------------
 # Patterns and Models
+# ------------------------------------------------------------------------
 ggplot(data = faithful) +
   geom_point(mapping = aes(x = eruptions, y = waiting))
 
@@ -436,15 +457,18 @@ ggplot(data = diamonds2) +
 ggplot(data = diamonds2) +
   geom_boxplot(mapping = aes(x = cut, y = resid))
 
+# ------------------------------------------------------------------------
 # RStudio projects
+# ------------------------------------------------------------------------
 ggplot(diamonds, aes(carat, price)) +
   geom_hex()
 ggsave("diamonds.pdf")
 
 write_csv(diamonds, "diamonds.csv")
 
+# ------------------------------------------------------------------------
 # Tidy data with tidyr
-
+# ------------------------------------------------------------------------
 table4a <- tribble (~country, ~"1999", ~"2000",
                     #-------|------|-------
                     "Afghanistan", 745, 2666,
@@ -523,9 +547,13 @@ who5 <- who4 %>%
 who5 %>% 
   count(country, year, sex)
 
+# ------------------------------------------------------------------------
 # Relational data with dplyr
+# ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
 # Mutating joins
+# ------------------------------------------------------------------------
 flights2 <-  flights %>%
   select(year:day, hour, origin, dest, tailnum, carrier)
 
@@ -553,7 +581,9 @@ flights %>%
   anti_join(planes, by = "tailnum") %>% 
   count(tailnum, sort = TRUE)
 
+# ------------------------------------------------------------------------
 # Strings with stringr
+# ------------------------------------------------------------------------
 str_length( c(" a", "R for data science", NA))
 
 str_c("x", "y", "z", sep = "   ")
@@ -605,7 +635,9 @@ sentences %>%
   str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
 
+# ------------------------------------------------------------------------
 # Factors with forcats
+# ------------------------------------------------------------------------
 gss_cat %>% 
   count(race)
 
@@ -626,7 +658,9 @@ ggplot(relig, aes(tvhours, relig)) +
 ggplot(relig, aes(tvhours, fct_reorder(relig, tvhours))) +
   geom_point()
 
+# ------------------------------------------------------------------------
 # Dates and times with lubridate
+# ------------------------------------------------------------------------
 today()
 now()
 
