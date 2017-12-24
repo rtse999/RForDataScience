@@ -701,5 +701,19 @@ flights_dt %>%
   ggplot(aes(dep_hour)) + 
   geom_freqpoly(binwidth=300)
 
+# ------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------
+commas <- function(...) stringr::str_c(..., collapse = ", ")
+commas(letters[1:10])
+commas(letters)
+commas(letter, collapse = -')
 
+rule <- function(..., pad = "-") {
+  title <- paste0(...)
+  width <- getOption("width") - nchar(title) - 5
+  cat(title, " ", stringr::str_dup(pad, width), "\n", sep = "")
+}
+rule("Important Output")
+rule("How does this work", "with multiple", 56)
 
