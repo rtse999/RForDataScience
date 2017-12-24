@@ -1,6 +1,8 @@
 # ------------------------------------------------------------------------
 # Worked through examples from "R for Data Science" book
 #
+# Exercise Solutions and Notes for “R for Data Science”: https://jrnold.github.io/e4qf/
+#
 # Location: /Users/raymondtse/Dropbox/Analysis/Books/RForDataScience/RForDataScienceWorkings01.r
 # First created: 08:11 - Thursday 6 July 2017
 # Last modified: 16:27 - Sunday 17 December 2017
@@ -707,7 +709,7 @@ flights_dt %>%
 commas <- function(...) stringr::str_c(..., collapse = ", ")
 commas(letters[1:10])
 commas(letters)
-commas(letter, collapse = -')
+commas(letter, collapse = "-")
 
 rule <- function(..., pad = "-") {
   title <- paste0(...)
