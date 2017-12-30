@@ -27,6 +27,7 @@ library(stringr)
 library(forcats)
 library(lubridate)
 library(magrittr)
+library(purrr)
 
 devtools::session_info()
 
@@ -748,6 +749,10 @@ for (i in seq_along(df)) {
 }
 df
 
+map_dbl(df, mean)
+map_dbl(df, median)
+map_dbl(df, sd)
+
 #
 # Switching to my preferred method of naming variables
 # However code copied directly from the text will be typed verbatim
@@ -763,5 +768,102 @@ for (i in seq_along(flights)) {
   outputTypes[[i]] <- typeof(flights[[i]])
 }
 outputTypes
+
+# ------------------------------------------------------------------------
+# Part IV: Model - Chapter 18: Model basics with modelr
+# ------------------------------------------------------------------------
+models <- tibble(
+  a1 = runif(250, -20, 40),
+  a2 = runif(250, -5, 5)
+)
+
+sim1 <- tibble(
+  x = runif(25, 0, 10),
+  y = 5 + 2.5 * x + runif(25, -5, 5)
+)
+
+ggplot(sim1, aes(x,y)) +
+  geom_point()
+
+ggplot(sim1, aes(x, y)) +
+  geom_abline(
+    aes(intercept = a1, slope = a2),
+    data = models, alpha = 1/4
+  ) +
+  geom_point()
+
+model1 <- function(a, data) {
+  a[1] + data$x * a[2]
+}
+
+model1(c(7, 1.5), sim1)
+
+measure_distance <- function(mod, data) {
+  diff <- data$y - model1(mod, data)
+  sqrt(mean(diff ^ 2))
+}
+
+measure_distance(c(7, 1.5), sim1)
+
+sim1_dist <- function(a1, a2) {
+  measure_distance(c(a1, a2), sim1)
+}
+
+models <- models %>% 
+  mutate(dist = map2_dbl(a1, a2, sim1_dist)) 
+models
+
+ggplot(sim1, aes(x, y)) +
+  geom_point(size = 2, colour = "grey30") +
+  geom_abline(
+    aes(intercept = a1, slope = a2, colour = -dist),
+    data = filter(models, rank(dist) <= 10)
+  )
+
+ggplot(models, aes(a1, a2)) +
+  geom_point(
+    data = filter(models, rank(dist) <= 10),
+    size = 4, colour = "red"
+  ) +
+  geom_point(aes(colour = -dist))
+
+grid <- expand.grid(
+  a1 = seq(-5, 20, length = 25),
+  a2 = seq(1, 3, length = 25)
+  ) %>% 
+  mutate(dist = map2_dbl(a1, a2, sim1_dist))
+
+ggplot(grid, aes(a1, a2))+
+  geom_point(
+    data = filter(grid, rank(dist) <= 10),
+    size = 4, colour = "red"
+  ) +
+  geom_point(aes(colour = -dist))
+  
+ggplot(sim1, aes(x, y)) +
+  geom_point(size = 2, colour = "grey30") +
+  geom_abline(
+    aes(intercept = a1, slope = a2, colour = -dist),
+    data = filter(grid, rank(dist) <= 10)
+  )
+
+best <- optim(c(0,0), measure_distance, data = sim1)  
+str(best)  
+best$par  
+
+ggplot(sim1, aes(x,y)) +
+  geom_point(size = 2, colour = "grey30") +
+  geom_abline(intercept = best$par[1], slope = best$par[2])
+  
+  
+  
+  
+
+
+
+
+
+
+
 
 
