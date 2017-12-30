@@ -854,12 +854,41 @@ best$par
 ggplot(sim1, aes(x,y)) +
   geom_point(size = 2, colour = "grey30") +
   geom_abline(intercept = best$par[1], slope = best$par[2])
-  
-  
-  
-  
 
+sim1_mod <- lm(y ~ x, data = sim1)  
+str(sim1_mod)  
+coef(sim1_mod)
+  
+# ------------------------------------------------------------------------
+# Visualising models
+# ------------------------------------------------------------------------
+grid <- sim1 %>% 
+  data_grid(x)
+grid
 
+grid <- grid %>% 
+  add_predictions(sim1_mod)
+grid
+
+ggplot(sim1, aes(x)) +
+  geom_point(aes(y = y)) + 
+  geom_line(
+    aes(y = pred),
+    data = grid, 
+    colour = "red",
+    size = 1
+  )
+
+sim1 <- sim1 %>% 
+  add_residuals(sim1_mod)
+sim1
+
+ggplot(sim1, aes(resid)) + 
+  geom_histogram(binwidth = 0.5)
+
+ggplot(sim1, aes(x, resid)) +
+  geom_ref_line(h = 0) +
+  geom_point()
 
 
 
