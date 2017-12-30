@@ -719,3 +719,39 @@ rule <- function(..., pad = "-") {
 rule("Important Output")
 rule("How does this work", "with multiple", 56)
 
+# ------------------------------------------------------------------------
+# Vectors
+# ------------------------------------------------------------------------
+x <- as.Date("1969-12-12")
+unclass(x)
+typeof(x)
+attributes(x)
+attr(x, "tzone")
+
+# ------------------------------------------------------------------------
+# Chapter 17: Iteration with purrr
+# ------------------------------------------------------------------------
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+#
+# Switching to my preferred method of naming variables
+# However code copied directly from the text will be typed verbatim
+#
+outputMeans <- vector("double", ncol(mtcars))
+for (i in seq_along(mtcars)) {
+  outputMeans[[i]] <- mean(mtcars[[i]])
+}
+outputMeans
+
+outputTypes <- vector("character", ncol(flights))
+for (i in seq_along(flights)) {
+  outputTypes[[i]] <- typeof(flights[[i]])
+}
+outputTypes
+
+
