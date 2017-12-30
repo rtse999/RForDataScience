@@ -738,6 +738,16 @@ df <- tibble(
   d = rnorm(10)
 )
 
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+for (i in seq_along(df)) {
+  df[[i]] <-rescale01(df[[i]])
+}
+df
+
 #
 # Switching to my preferred method of naming variables
 # However code copied directly from the text will be typed verbatim
