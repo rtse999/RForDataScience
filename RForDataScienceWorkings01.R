@@ -28,6 +28,7 @@ library(forcats)
 library(lubridate)
 library(magrittr)
 library(purrr)
+library(splines)
 
 devtools::session_info()
 
@@ -890,9 +891,120 @@ ggplot(sim1, aes(x, resid)) +
   geom_ref_line(h = 0) +
   geom_point()
 
+ggplot(sim2) +
+  geom_point(aes(x,y))
 
+model_matrix(sim2, y ~ x)
+mod2 <- lm(y ~ x, data = sim2)
+grid <- sim2 %>% 
+  data_grid(x) %>% 
+  add_predictions(mod2)
+grid
 
+ggplot(sim2, aes(x)) +
+  geom_point(aes(y = y)) +
+  geom_point(
+    data = grid, 
+    aes(y = pred),
+    colour = "red",
+    size =4
+  )
 
+mySim <- tibble(
+  y = runif(10, 0, 1),
+  x1 = runif(10, 0, 1),
+  x2 = runif(10, 0, 1)
+)
 
+model_matrix(mySim, y ~ x1 + x2)
+model_matrix(mySim, y ~ x1 * x2)
+mySimModel <- lm(y ~ x1 * x2, data = mySim)
+ggplot(mySim, aes(x1, y)) +
+  geom_point(aes(colour = x2))
 
+# ------------------------------------------------------------------------
+# Interactions (Continuous & Categorical)
+# ------------------------------------------------------------------------
+ggplot(sim3, aes(x1, y)) +
+  geom_point(aes(colour = x2))
 
+mod1 <- lm(y ~ x1 + x2, data = sim3)
+mod2 <- lm(y ~ x1 * x2, data = sim3)
+
+grid <- sim3 %>% 
+  data_grid(x1, x2) %>% 
+  gather_predictions(mod1, mod2)
+grid
+
+ggplot(sim3, aes(x1, y, colour = x2)) +
+  geom_point() +
+  geom_line(data = grid, aes(y = pred)) +
+  facet_wrap(~ model)
+
+ggplot(sim3, aes(x1, y, colour = x2)) +
+  geom_point() +
+  geom_line(data = grid, aes(y = pred)) +
+  facet_wrap(model ~ x2)
+
+sim3  <- sim3 %>% 
+  gather_residuals(mod1, mod2)
+
+ggplot(sim3, aes(x1, resid, colour = x2)) +
+  geom_point() +
+  facet_grid(model ~ x2)
+
+ggplot(sim3, aes(x1, resid, colour = x2)) +
+  geom_point() +
+  facet_grid(~ model)
+
+# ------------------------------------------------------------------------
+# Interactions (Two Continuous)
+# ------------------------------------------------------------------------
+mod1 <- lm(y ~ x1 + x2, data = sim4)
+mod2 <- lm(y ~ x1 * x2, data = sim4)
+
+grid <- sim4 %>% 
+  data_grid(
+    x1 = seq_range(x1, 5),
+    x2 = seq_range(x2, 5)
+  ) %>% 
+  gather_predictions(mod1, mod2)
+grid
+
+ggplot(grid, aes(x1, x2)) +
+  geom_tile(aes(fill = pred)) +
+  facet_wrap(~ model)
+
+ggplot(grid, aes(x1, pred, colour = x2, group = x2)) +
+  geom_line() +
+  facet_wrap(~ model)
+
+ggplot(grid, aes(x2, pred, colour = x1, group = x1)) +
+  geom_line() +
+  facet_wrap(~ model)
+
+# ------------------------------------------------------------------------
+# Transformations
+# ------------------------------------------------------------------------
+sim5 <- tibble (
+  x = seq(0, 3.5* pi, length = 50),
+  y = 4 * sin(x) + rnorm(length(x))
+)
+
+ggplot(sim5, aes(x, y)) +
+  geom_point()
+
+mod1 <- lm(y ~ ns(x, 1), data = sim5)
+mod2 <- lm(y ~ ns(x, 2), data = sim5)
+mod3 <- lm(y ~ ns(x, 3), data = sim5)
+mod4 <- lm(y ~ ns(x, 4), data = sim5)
+mod5 <- lm(y ~ ns(x, 5), data = sim5)
+
+grid <- sim5 %>% 
+  data_grid(x = seq_range(x, n = 50, expand = 0.1)) %>% 
+  gather_predictions(mod1, mod2, mod3, mod4, mod5, .pred = "y")
+
+ggplot(sim5, aes(x,y)) +
+  geom_point() +
+  geom_line(data = grid, colour = "red") +
+  facet_wrap(~ model)
