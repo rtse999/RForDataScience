@@ -1049,3 +1049,66 @@ ggplot(diamonds2, aes(clarity, lresid)) + geom_boxplot()
 mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity,
                    data = diamonds2)
 
+# ------------------------------------------------------------------------
+# What affects the daily number of flights ?
+# ------------------------------------------------------------------------
+daily <- flights %>%
+  mutate(date = make_date(year, month, day)) %>%
+  group_by(date) %>% 
+  summarise(n = n())
+
+ggplot(daily, aes(date, n)) +
+  geom_line()
+
+daily <- daily %>%
+  mutate(wday = wday(date, label = TRUE))
+ggplot(daily, aes(wday, n)) + 
+  geom_boxplot()
+
+mod <-lm(n ~ wday, data = daily)
+
+grid <- daily %>%
+  data_grid(wday) %>% 
+  add_predictions(mod, "n")
+
+ggplot(daily, aes(wday, n)) + 
+  geom_boxplot() + 
+  geom_point(data = grid, colour = "red", size = 4)
+
+daily <- daily %>% 
+  add_residuals(mod)
+ggplot(daily, aes(date, resid)) +
+  geom_ref_line(h = 0) +
+  geom_line()
+
+ggplot(daily, aes(date, resid, colour = wday)) +
+  geom_ref_line(h = 0) +
+  geom_line()
+
+daily %>% 
+  filter(resid < -100)
+
+ggplot(daily, aes(date, resid)) +
+  geom_ref_line(h = 0) +
+  geom_line(colour = "grey50") +
+  geom_smooth(se = FALSE, span = 0.2)
+
+daily %>% 
+  filter(wday == "Sat") %>% 
+  ggplot(aes(date, n)) + 
+  geom_point() +
+  geom_line() +
+  scale_x_date(NULL,
+               date_breaks = "1 month",
+               date_labels = "%b")
+
+term <- function(date) {
+  cut(date,
+      breaks = ymd(20130101, 20130605, 20130825, 20140101),
+      labels = c("spring", "summer", fall)
+  )
+}
+
+daily <- daily %>% 
+  mutate(term = term(date))
+
