@@ -1247,7 +1247,42 @@ gapminder %>%
 gapminder %>% 
   nest(year : gdpPercap)
 
+# ------------------------------------------------------------------------
+# Part V. Communicate
+# ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+# Chapter 22: Graphics for communication
+# ------------------------------------------------------------------------
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = paste(
+      "Fuel efficiency generally decreases with engine size"
+    )
+  )
 
+best_in_class <- mpg %>% 
+  group_by(class) %>% 
+  filter(row_number(desc(hwy)) == 1)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_text(aes(label = model), data = best_in_class)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_label(aes(label = model), data = best_in_class,
+             nudge_y = 2, alpha = 0.5)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_point(size = 3, shape = 1, data = best_in_class) +
+  ggrepel::geom_label_repel(aes(label = model), data = best_in_class)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(15, 40, by = 5))
 
 
