@@ -1105,7 +1105,7 @@ daily %>%
 term <- function(date) {
   cut(date,
       breaks = ymd(20130101, 20130605, 20130825, 20140101),
-      labels = c("spring", "summer", fall)
+      labels = c("spring", "summer", "fall")
   )
 }
 
