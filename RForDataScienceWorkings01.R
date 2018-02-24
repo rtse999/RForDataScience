@@ -19,11 +19,13 @@ format(Sys.time(), "%a %b %d %H:%M:%S %Y")
 #install.packages("hexbin")
 library(dplyr)
 library(forcats)
+library(gapminder)
 library(ggstance)
 library(hexbin)
 library(lubridate)
 library(lvplot)
 library(magrittr)
+library(MASS)
 library(modelr)
 library(nycflights13)
 library(purrr)
@@ -1112,3 +1114,60 @@ term <- function(date) {
 daily <- daily %>% 
   mutate(term = term(date))
 
+daily %>% 
+  filter(wday == "Sat") %>% 
+  ggplot(aes(date, n, colour = term)) +
+  geom_point(alpha = 1/3) +
+  geom_line() +
+  scale_x_date(NULL,
+               date_breaks = "1 month",
+               date_labels = "%b")
+
+ggplot(daily, aes(wday, n, colour = term)) +
+  geom_boxplot()
+
+mod1 <- lm(n ~ wday, data = daily)
+mod2 <- lm(n ~ wday * term, data = daily)
+
+daily %>% 
+  gather_residuals(without_term = mod1, with_term = mod2) %>% 
+  ggplot(aes(date, resid, colour = model)) +
+  geom_line(alpha = 0.75)
+
+grid <- daily %>% 
+  data_grid(wday, term) %>% 
+  add_predictions(mod2, "n")
+
+ggplot(daily, aes(wday, n)) +
+  geom_boxplot() +
+  geom_point(data = grid, colour = "red") +
+  facet_wrap(~ term)
+
+mod3 <- MASS::rlm(n ~ wday * term, data = daily)  
+
+daily %>% 
+  add_residuals(mod3, "resid") %>% 
+  ggplot(aes(date, resid)) +
+  geom_hline(yintercept = 0, size = 2, colour = "white") +
+  geom_line()
+
+mod <-  MASS::rlm(n ~ wday * ns(date, 5), data = daily)  
+  
+daily %>%
+  data_grid(wday, date = seq_range(date, n = 13)) %>% 
+  add_predictions(mod) %>% 
+  ggplot(aes(date, pred, colour = wday)) +
+  geom_line() +
+  geom_point()
+  
+# ------------------------------------------------------------------------
+# Chapter 20: Many models with purrr and broom
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+
+  
