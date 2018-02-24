@@ -1163,11 +1163,64 @@ daily %>%
 # ------------------------------------------------------------------------
 # Chapter 20: Many models with purrr and broom
 # ------------------------------------------------------------------------
+ggplot(gapminder, aes(year, lifeExp, group = country)) +
+  geom_line(alpha = 1/3)
 
+nz <- filter(gapminder, country == "New Zealand")
+nz %>% 
+  ggplot(aes(year, lifeExp)) + 
+  geom_line() +
+  ggtitle("Full data =")
 
+nz_mod <- lm(lifeExp ~ year, data = nz)
+nz %>% 
+  add_predictions(nz_mod) %>%
+  ggplot(aes(year, pred)) +
+  geom_line() +
+  ggtitle("Linear Trend + ")
 
+nz %>% 
+  add_residuals(nz_mod) %>% 
+  ggplot(aes(year, resid)) +
+  geom_hline(yintercept = 0, colour = "white", size = 3) +
+  geom_line() +
+  ggtitle("Remaining pattern")
 
-
-
-
+by_country <- gapminder %>% 
+  group_by(country, continent) %>% 
+  nest()
   
+country_model <-function(df) {
+  lm(lifeExp ~ year, data = df)
+}
+
+models <- map(by_country$data, country_model)
+  
+by_country <- by_country %>% 
+  mutate(model = map(data, country_model))
+
+by_country %>% 
+  filter(continent == "Europe")
+
+by_country %>% 
+  arrange(continent, country)
+
+by_country <- by_country %>% 
+  mutate(resids = map2(data, model, add_residuals))
+
+resids <- unnest(by_country, resids)
+
+resids %>%
+  ggplot(aes(year, resid)) +
+  geom_line(aes(group = country), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+
+resids %>% 
+  ggplot(aes(year, resid, group = country)) +
+  geom_line(alpha = 1/3) +
+  facet_wrap(~continent)
+
+
+
+
+
