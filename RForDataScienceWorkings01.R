@@ -1220,6 +1220,33 @@ resids %>%
   geom_line(alpha = 1/3) +
   facet_wrap(~continent)
 
+broom::glance(nz_mod)
+
+glance <- by_country %>% 
+  mutate(glance = map(model, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE)
+
+glance %>% 
+  arrange(r.squared)
+
+glance %>% 
+  ggplot(aes(continent, r.squared)) + 
+  geom_jitter(width = 0.5)
+
+bad_fit <- filter(glance, r.squared < 0.25)
+
+gapminder %>% 
+  semi_join(bad_fit, by = "country") %>% 
+  ggplot(aes(year, lifeExp, colour = country)) +
+  geom_line()
+
+gapminder %>% 
+  group_by(country, continent) %>% 
+  nest()
+
+gapminder %>% 
+  nest(year : gdpPercap)
+
 
 
 
