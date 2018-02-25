@@ -1285,4 +1285,67 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   scale_y_continuous(breaks = seq(15, 40, by = 5))
 
+presidential %>% 
+  mutate(id = 33 + row_number()) %>% 
+  ggplot(aes(start, id, colour = party)) +
+  geom_point() +
+  geom_segment(aes(xend = end, yend = id)) +
+  scale_colour_manual(values = c(Republican = "red",
+                                 Democratic = "blue")) +
+  scale_x_date(NULL,
+               breaks = presidential$start,
+               date_labels = "`%y")
+
+base <- ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class))
+
+base + theme(legend.position = "left")
+base + theme(legend.position = "top")
+base + theme(legend.position = "bottom")
+base + theme(legend.position = "right")
+base + theme(legend.position = "none")
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth(se = FALSE) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(
+    nrow = 1,
+    override.aes = list(size = 4)
+  )
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = drv))
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = drv, shape = drv)) +
+  scale_color_brewer(palette = "Set1")
+
+df <- tibble(
+  x = rnorm(10000),
+  y = rnorm(10000)
+)
+ggplot(df,aes(x, y)) +
+  geom_hex() +
+  coord_fixed()
+
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  viridis::scale_fill_viridis() +
+  coord_fixed()
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth() +
+  coord_cartesian(xlim = c(5,7), ylim = c(10,30))
+
+mpg %>% 
+  filter(displ >= 5, displ <= 7, hwy >= 10, hwy <= 30) %>% 
+  ggplot(aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth()
+  
+
+
 
