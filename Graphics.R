@@ -80,6 +80,8 @@ ggplot(diamonds, aes(carat)) +
 
 chol <- read.table(url("http://assets.datacamp.com/blog_assets/chol.txt"), header = TRUE)
 
+skim(chol)
+
 ggplot(data=chol, aes(chol$AGE)) + 
   geom_histogram(breaks=seq(20, 50, by = 2), 
                  col="red", 
@@ -90,9 +92,25 @@ ggplot(data=chol, aes(chol$AGE)) +
   xlim(c(18,52)) + 
   ylim(c(0,30))
 
+# Defaults to 30 bins
 ggplot(data=chol, aes(chol$AGE)) + 
-  geom_histogram(boundary = 0)
+  geom_histogram() 
 
+# 1 bin per year
+ggplot(data=chol, aes(chol$AGE)) + 
+  geom_histogram(bins = (max(chol$AGE) - min(chol$AGE)) + 1) 
+
+# Bins = square root of number of records rounded 
+ggplot(data = chol, aes(chol$AGE)) +
+  geom_histogram(bins = round((nrow(chol)^0.5))) 
+
+# Bins = square root of number of records rounded up
+ggplot(data = chol, aes(chol$AGE)) +
+  geom_histogram(bins = ceiling((nrow(chol)^0.5)))
+
+
+---
+  
 ggplot(data=chol, aes(chol$AGE)) + 
   geom_histogram(breaks=seq(20, 50, by = 1))
 
@@ -110,3 +128,6 @@ ggplot(tmp) +
 
 ggplot(tmp) +
   geom_histogram(aes(x = AGE), breaks = seq(18, 22, by = 1))
+
+ggplot(tmp) +
+  stat_bin(aes(x = AGE))
