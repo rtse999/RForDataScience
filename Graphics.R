@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------
 # System time
 # ------------------------------------------------------------------------
-format(Sys.time(), "Sat Dec 22 11:33:55 2018")
+format(Sys.time(), "%a %b %d %H:%M:%S %Y")
 
 # ------------------------------------------------------------------------
 # Install Packages
@@ -84,13 +84,13 @@ chol <- read.table(url("http://assets.datacamp.com/blog_assets/chol.txt"), heade
 skim(chol)
 
 ggplot(data=chol, aes(chol$AGE)) + 
-  geom_histogram(breaks=seq(18.5, 50.5, by = 1), 
+  geom_histogram(breaks=seq(17.5, 50.5, by = 1), 
                  col="red", 
                  fill="green", 
                  alpha = .2) + 
   labs(title="Histogram for Age") +
   labs(x="Age", y="Count") + 
-  xlim(c(18,52)) + 
+  xlim(c(16,52)) + 
   ylim(c(0,25))
 
 # Defaults to 30 bins
